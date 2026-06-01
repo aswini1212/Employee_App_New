@@ -1,11 +1,11 @@
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict, EmailStr, Field,field_validator, model_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from models.employee import EmployeeRole
 
 
-#-----schemas for adress table-----
+# -----schemas for adress table-----
 class AddressCreate(BaseModel):
     line1: str
     city: str
@@ -14,13 +14,12 @@ class AddressCreate(BaseModel):
 
     @field_validator("postal_code")
     @classmethod
-    def validate_postal_code(cls, v:str)->str:
+    def validate_postal_code(cls, v: str) -> str:
         if not v.isdigit():
             raise ValueError("Postalcode must contain only digits(0-9)")
         return v
-    
-    @model_validator(mode="after")
 
+    @model_validator(mode="after")
     def postal_code_length_for_country(self):
 
         country = self.country.strip().upper()
@@ -28,14 +27,13 @@ class AddressCreate(BaseModel):
         n = len(self.postal_code)
 
         if country in ("US", "USA") and n != 5:
-
             raise ValueError("US ZIP codes must be exactly 5 digits")
 
         elif country == "IN" and n != 6:
-
             raise ValueError("Indian PIN codes must be exactly 6 digits")
 
         return self
+
 
 class AddressResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
@@ -44,6 +42,7 @@ class AddressResponse(BaseModel):
     city: str
     postal_code: str
     country: str
+
 
 class AddressUpdate(BaseModel):
     line1: str
@@ -55,9 +54,7 @@ class AddressUpdate(BaseModel):
     @classmethod
     def validate_postal_code(cls, v: str) -> str:
         if not v.isdigit():
-            raise ValueError(
-                "Postal code must contain only digits (0-9)"
-            )
+            raise ValueError("Postal code must contain only digits (0-9)")
         return v
 
     @model_validator(mode="after")
@@ -66,53 +63,52 @@ class AddressUpdate(BaseModel):
         n = len(self.postal_code)
 
         if country in ("US", "USA") and n != 5:
-            raise ValueError(
-                "US ZIP codes must be exactly 5 digits"
-            )
+            raise ValueError("US ZIP codes must be exactly 5 digits")
 
         elif country == "IN" and n != 6:
-            raise ValueError(
-                "Indian PIN codes must be exactly 6 digits"
-            )
+            raise ValueError("Indian PIN codes must be exactly 6 digits")
 
         return self
-    
 
-#----schemas for employee table-----
+
+# ----schemas for employee table-----
 class EmployeeCreate(BaseModel):
     model_config = ConfigDict(str_strip_whitespace=True, extra="forbid")
     name: str = Field(min_length=1)
     email: str
-    age: int | None = Field(ge=0,le=150)
+    age: int | None = Field(ge=0, le=150)
     password: str = Field(min_length=6)
     role: EmployeeRole
     addresses: list[AddressCreate] | None = None
 
+
 class EmployeeResponse(BaseModel):
-    model_config = ConfigDict(from_attributes= True)
+    model_config = ConfigDict(from_attributes=True)
     id: int
-    name:str
+    name: str
     email: str
-    age:int | None
+    age: int | None
 
     addresses: list[AddressResponse] = []
 
+
 class EmployeeResponseId(BaseModel):
-    model_config = ConfigDict(from_attributes= True)
-    id:int
-    name:str
-    email:str
-    age:int | None
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    name: str
+    email: str
+    age: int | None
     created_at: datetime
     updated_at: datetime
-    
+
+
 class EmployeeUpdate(BaseModel):
     model_config = ConfigDict(str_strip_whitespace=True, extra="forbid")
     name: str = Field(min_length=1)
     email: str
-    age: int | None = Field(ge=0,le=150)
+    age: int | None = Field(ge=0, le=150)
     password: str = Field(min_length=6)
-    addresses: list[AddressCreate ]=[]
+    addresses: list[AddressCreate] = []
 
     @field_validator("age")
     @classmethod
@@ -121,12 +117,13 @@ class EmployeeUpdate(BaseModel):
             return v
         if v < 0:
             raise ValueError("age is negative")
-        if v >100:
+        if v > 100:
             print("age is greater than 100")
         return v
-    
-#----schemas for emp_dep_assoc table----
+
+
+# ----schemas for emp_dep_assoc table----
 class AssociationResponse(BaseModel):
     model_config = ConfigDict(str_strip_whitespace=True, extra="forbid")
-    department_id:int
-    employee_id:int
+    department_id: int
+    employee_id: int

@@ -1,1 +1,1 @@
-__all__=["department_router"]
+__all__ = ["department_router"]

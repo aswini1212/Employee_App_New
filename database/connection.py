@@ -19,7 +19,9 @@ class Base(DeclarativeBase):
     """Base class for ORM mapped classes (entities)."""
 
 
-engine = create_async_engine(settings.database_url, echo=False, pool_size=10, max_overflow=20)
+engine = create_async_engine(
+    settings.database_url, echo=False, pool_size=10, max_overflow=20
+)
 AsyncSessionLocal = async_sessionmaker(engine, expire_on_commit=False)
 
 
@@ -35,4 +37,3 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
 
 #     async with engine.begin() as conn:
 #         await conn.run_sync(Base.metadata.create_all)
-        

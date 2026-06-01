@@ -1,3 +1,1 @@
-
-
-__all__ = [ "employee_router"]
+__all__ = ["employee_router"]

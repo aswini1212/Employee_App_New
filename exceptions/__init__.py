@@ -1,8 +1,13 @@
 # from exceptions.handlers import AppException,NotFoundException,ConflictException,BadRequestException
 
-__all__=["AppException","NotFoundException","ConflictException","BadRequestException","UnauthorizedException"]
+__all__ = [
+    "AppException",
+    "NotFoundException",
+    "ConflictException",
+    "BadRequestException",
+    "UnauthorizedException",
+]
 
-from fastapi import HTTPException,status
 
 class AppException(Exception):
     """Base for all application-level errors."""
@@ -23,8 +28,10 @@ class ConflictException(AppException):
 class BadRequestException(AppException):
     """Client input is invalid in a way Pydantic validation didn't catch."""
 
+
 class UnauthorizedException(AppException):
     """Handled in handlers.py"""
+
 
 class ForbiddenException(AppException):
     """Handled in handlers.py"""

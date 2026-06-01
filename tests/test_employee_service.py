@@ -6,7 +6,8 @@ from database import Base
 from employees import employee_service as employee_service
 from employees.schemas import EmployeeCreate
 
-#test using sqlite
+
+# test using sqlite
 @pytest.mark.asyncio
 async def test_create_employee_persists_the_record():
     engine = create_async_engine(
@@ -27,10 +28,11 @@ async def test_create_employee_persists_the_record():
             email="ada@example.com",
             age=54,
             password="secret123",
-            addresses=None
+            addresses=None,
         )
-        employee = await employee_service.create(db, body.name,body.email,body.age,body.password,body.addresses)
-        
+        employee = await employee_service.create(
+            db, body.name, body.email, body.age, body.password, body.addresses
+        )
 
         assert employee.id is not None
         assert employee.name == "Ada"

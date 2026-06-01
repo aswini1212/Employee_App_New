@@ -1,11 +1,11 @@
-from datetime import datetime
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
-from pydantic import BaseModel, ConfigDict, EmailStr, Field,field_validator, model_validator
 
 class DepartmentResponse(BaseModel):
-    model_config = ConfigDict(from_attributes= True)
-    name:str= Field(min_length=1)
-    
+    model_config = ConfigDict(from_attributes=True)
+    name: str = Field(min_length=1)
+
+
 class DepartmentCreate(BaseModel):
     model_config = ConfigDict(str_strip_whitespace=True, extra="forbid")
     name: str = Field(min_length=1)
@@ -16,17 +16,20 @@ class DepartmentCreate(BaseModel):
         if any(ch.isdigit() for ch in v):
             raise ValueError("name must not contain digits")
         return v
-    
+
+
 class DepartmentUpdate(BaseModel):
     model_config = ConfigDict(str_strip_whitespace=True, extra="forbid")
     name: str = Field(min_length=1)
 
+
 class EmployeeBrief(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     id: int
-    name:str
+    name: str
     email: str
-    age:int | None
+    age: int | None
+
 
 class DepartmentDetailResponse(DepartmentResponse):
-    employees: list[EmployeeBrief]=[]
+    employees: list[EmployeeBrief] = []

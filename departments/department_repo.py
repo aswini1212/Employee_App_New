@@ -1,6 +1,5 @@
 from datetime import datetime
 
-from fastapi import HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
@@ -9,7 +8,8 @@ from exceptions import ConflictException, NotFoundException
 from models import Department
 from models.emp_dep_assoc import Emp_Dept_Assoc
 
-async def create(db:AsyncSession,name:str):
+
+async def create(db: AsyncSession, name: str):
     department = Department(name=name.strip())
     db.add(department)
 
@@ -22,41 +22,54 @@ async def create(db:AsyncSession,name:str):
     await db.refresh(department)
     return department
 
-async def fetch_all(db:AsyncSession):
+
+async def fetch_all(db: AsyncSession):
     stmt = select(Department).where(Department.deleted_at.is_(None))
-    department= await db.scalars(stmt)
+    department = await db.scalars(stmt)
     if not department:
         raise NotFoundException(detail="Department not found")
     return department
 
-async def fetch_one(dept_id:int,db:AsyncSession):
-    #to avoild lazy loading we are using select in load---load the departments, then the association rows and then the employees
-    stmt=select(Department).options(selectinload(Department.employee_departments).selectinload(Emp_Dept_Assoc.employee)).where(Department.deleted_at.is_(None)).where(Department.id==dept_id)
-    result= await db.scalars(stmt)
-    department=result.first()
+
+async def fetch_one(dept_id: int, db: AsyncSession):
+    # to avoild lazy loading we are using select in load---load the departments, then the association rows and then the employees
+    stmt = (
+        select(Department)
+        .options(
+            selectinload(Department.employee_departments).selectinload(
+                Emp_Dept_Assoc.employee
+            )
+        )
+        .where(Department.deleted_at.is_(None))
+        .where(Department.id == dept_id)
+    )
+    result = await db.scalars(stmt)
+    department = result.first()
     if not department:
         raise NotFoundException(detail="Department not found")
     return department
 
-async def update(dept_id:int,db:AsyncSession,name:str):
-    department=await fetch_one(dept_id,db)
-    department.name=name
-    
+
+async def update(dept_id: int, db: AsyncSession, name: str):
+    department = await fetch_one(dept_id, db)
+    department.name = name
+
     if not department:
-        raise NotFoundException(detail="Department not found")      
+        raise NotFoundException(detail="Department not found")
     try:
         await db.commit()
     except IntegrityError as e:
         await db.rollback()
         print(e)
         raise
-    
+
     await db.refresh(department)
     return department
 
-async def remove(dept_id:int, db:AsyncSession):
-    department=await fetch_one(dept_id,db)
-    department.deleted_at=datetime.now()
+
+async def remove(dept_id: int, db: AsyncSession):
+    department = await fetch_one(dept_id, db)
+    department.deleted_at = datetime.now()
     if not department:
         raise NotFoundException(detail="Department not found")
     try:
