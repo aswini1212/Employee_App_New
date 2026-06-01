@@ -19,7 +19,7 @@ async def create_employee(body: EmployeeCreate, db: AsyncSession = Depends(get_d
     addresses=body.addresses
     role=body.role
     employee=await employee_service.create(db,name,email,age,password,role,addresses)
-    print("employee - ", employee)
+    #print("employee - ", employee)
     return employee
 
 #getting an employee by name

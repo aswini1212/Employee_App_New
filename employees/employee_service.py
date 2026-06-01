@@ -16,7 +16,7 @@ async def create(db:AsyncSession, name:str, email:str,age:int,password:str,role:
     
     hashed= hash_password(password)
     employee=await employee_repo.create(db=db, name=name,email=email,age=age,password=hashed,addresses=addresses,role=role)
-    print("here - ", employee)
+    #print("here - ", employee)
     return employee
 
 async def fetch_all(db:AsyncSession) -> Employee:

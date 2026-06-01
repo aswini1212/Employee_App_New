@@ -9,6 +9,9 @@ from exceptions import BadRequestException, ConflictException, NotFoundException
 from models import Employee, Address
 from models.emp_dep_assoc import Emp_Dept_Assoc
 from models.employee import EmployeeRole
+import logging 
+
+logger= logging.getLogger(__name__)
 
 async def create(db:AsyncSession,name:str, email:str, age:int,password:str, role: EmployeeRole, addresses):
     db_employee = Employee(name=name.strip(), email=email.strip(),age=age,password_hash=password,role=role)
@@ -49,6 +52,7 @@ async def fetch_one(emp_id:int,db:AsyncSession):
     db_employee = await db.scalars(stmt)
     emp = db_employee.first()
     if not emp:
+        logger.info(f"ERROR: employee has not been fetched successfully")
         raise NotFoundException(detail="Employe not found")
     return emp
 
