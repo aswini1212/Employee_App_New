@@ -49,12 +49,6 @@ async def fetch_one(emp_id: int, db: AsyncSession) -> Employee:
     return employee
 
 
-# getting an employee by email
-async def get_by_email(email: str, db: AsyncSession) -> Employee | None:
-    employee = await employee_repo.get_by_email(email, db)
-    return employee
-
-
 # getting an employee by name
 async def get_by_name(name: str, db: AsyncSession):
     employee = await employee_repo.get_by_name(name, db)

@@ -322,6 +322,7 @@ dependencies = [
     { name = "greenlet" },
     { name = "pydantic", extra = ["email"] },
     { name = "pydantic-settings" },
+    { name = "pytest-asyncio" },
     { name = "python-dotenv" },
     { name = "python-jose" },
     { name = "python-multipart" },
@@ -332,6 +333,7 @@ dependencies = [
 [package.dev-dependencies]
 dev = [
     { name = "aiosqlite" },
+    { name = "greenlet" },
     { name = "httpx" },
     { name = "poethepoet" },
     { name = "pytest" },
@@ -349,6 +351,7 @@ requires-dist = [
     { name = "pydantic", specifier = ">=2.13.4" },
     { name = "pydantic", extras = ["email"], specifier = ">=2.0.0" },
     { name = "pydantic-settings", specifier = ">=2.0.0" },
+    { name = "pytest-asyncio", specifier = ">=1.4.0" },
     { name = "python-dotenv", specifier = ">=1.2.2" },
     { name = "python-jose", extras = ["cryptogrphy"], specifier = ">=3.5.0" },
     { name = "python-multipart", specifier = ">=0.0.30" },
@@ -358,11 +361,12 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "aiosqlite", specifier = ">=0.22.1" },
+    { name = "aiosqlite", specifier = ">=0.20.0" },
+    { name = "greenlet", specifier = ">=3.0" },
     { name = "httpx", specifier = ">=0.27.0" },
-    { name = "poethepoet", specifier = ">=0.46.0" },
+    { name = "poethepoet", specifier = ">=0.32.0" },
     { name = "pytest", specifier = ">=8.0.0" },
-    { name = "pytest-asyncio", specifier = ">=1.4.0" },
+    { name = "pytest-asyncio", specifier = ">=0.23.0" },
     { name = "pytest-cov", specifier = ">=5.0.0" },
 ]
 

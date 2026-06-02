@@ -22,6 +22,8 @@ def create_access_token(data: dict) -> str:
 
 
 def decode_access_token(token: str) -> dict | None:
+    """
+    Decodes the access token and returns the payload if valid, otherwise returns None."""
     try:
         return jwt.decode(
             token, settings.jwt_secret, algorithms=[settings.jwt_algorithm]

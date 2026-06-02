@@ -10,7 +10,6 @@ from middleware import configure_middleware
 from employees.employee_router import router as employee_router
 from departments.department_router import router as department_router
 
-from config import settings
 
 from auth.router import router as auth_router
 
@@ -125,6 +124,6 @@ register_exception_handlers(app)
 #     return db_employee.to_api_dict()
 
 
-@app.get("/health", tags=["Health"])
-def health_check():
-    return {"status": "healthy", "env": settings.app_env}
+# @app.get("/health", tags=["Health"])
+# def health_check():
+#     return {"status": "healthy", "env": settings.app_env}

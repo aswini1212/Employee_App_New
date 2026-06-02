@@ -1,1 +1,22 @@
-Generic single-database configuration.
+
+#commands to use
+# running the server:
+# uvicorn main:app --reload
+# docker compose up --build --watch
+
+#docker commands
+# docker pull image name
+# docker run image name
+# docker ps
+# docker ps -a
+# docker start container-name/id
+# docker stop container-name/id
+# docker rm container-name/id
+
+#psql commands
+# psql -h localhost -p 5432 -U postgres
+
+#alembic commands
+# alembic revision --autogenerate -m "message"
+# alembic upgrade head
+# alembic downgrade -1

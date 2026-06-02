@@ -49,7 +49,7 @@ async def create(
         print(e)
         raise
     await db.refresh(db_employee)
-    # to overcome the problem of greenlet error caused due to lazy loading we areexplicitly loading the employees with addresses again
+    # to overcome the problem of greenlet error caused due to lazy loading we are explicitly loading the employees with addresses again
     stmt = (
         select(Employee)
         .options(selectinload(Employee.addresses))
@@ -85,7 +85,7 @@ async def fetch_one(emp_id: int, db: AsyncSession):
     emp = db_employee.first()
     if not emp:
         logger.info("ERROR: employee has not been fetched successfully")
-        raise NotFoundException(detail="Employee not found")
+        raise NotFoundException(detail=f"Employee  with id {emp_id} not found")
     return emp
 
 
@@ -100,7 +100,7 @@ async def get_by_name(name: str, db: AsyncSession):
     emp = await db.scalars(stmt)
     db_employee = emp.first()
     if not db_employee:
-        raise NotFoundException(detail="Employe not found")
+        raise NotFoundException(detail="Employee not found")
     return db_employee
 
 

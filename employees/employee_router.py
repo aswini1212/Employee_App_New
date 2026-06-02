@@ -7,7 +7,6 @@ from employees.schemas import (
     AssociationResponse,
     EmployeeCreate,
     EmployeeResponse,
-    EmployeeResponseId,
     EmployeeUpdate,
     AddressUpdate,
 )
@@ -23,8 +22,12 @@ router = APIRouter(prefix="/employee", dependencies=[Depends(get_current_user)])
     status_code=status.HTTP_201_CREATED,
     tags=["Employees"],
     response_model=EmployeeResponse,
+    dependencies=[Depends(require_role(EmployeeRole.HR))],
 )
-async def create_employee(body: EmployeeCreate, db: AsyncSession = Depends(get_db)):
+async def create_employee(
+    body: EmployeeCreate,
+    db: AsyncSession = Depends(get_db),
+):
     name = body.name
     email = body.email
     age = body.age
@@ -39,16 +42,9 @@ async def create_employee(body: EmployeeCreate, db: AsyncSession = Depends(get_d
 
 
 # getting an employee by name
-@router.get("/search/{name}", tags=["Employees"], response_model=EmployeeResponse)
+@router.get("", tags=["Employees"], response_model=EmployeeResponse)
 async def get_by_name(name: str, db: AsyncSession = Depends(get_db)):
     employee = await employee_service.get_by_name(name=name, db=db)
-    return employee
-
-
-# getting an employee with email
-@router.get("/email/{email}", tags=["Employees"], response_model=EmployeeResponseId)
-async def get_by_email(email: str, db: AsyncSession = Depends(get_db)):
-    employee = await employee_service.get_by_email(email=email, db=db)
     return employee
 
 
@@ -57,7 +53,6 @@ async def get_by_email(email: str, db: AsyncSession = Depends(get_db)):
     "",
     tags=["Employees"],
     response_model=list[EmployeeResponse],
-    dependencies=[Depends(require_role(EmployeeRole.HR))],
 )
 async def fetch_all(
     db: AsyncSession = Depends(get_db),
@@ -71,7 +66,6 @@ async def fetch_all(
     "/id/{emp_id}",
     tags=["Employees"],
     response_model=EmployeeResponse,
-    dependencies=[Depends(require_role(EmployeeRole.HR))],
 )
 async def fetch_one(
     emp_id: int,
@@ -83,7 +77,12 @@ async def fetch_one(
 
 
 # modifying an employee w/o address
-@router.put("/{emp_id}", tags=["Employees"], response_model=EmployeeResponse)
+@router.put(
+    "/{emp_id}",
+    tags=["Employees"],
+    response_model=EmployeeResponse,
+    dependencies=[Depends(require_role(EmployeeRole.HR))],
+)
 async def update(body: EmployeeUpdate, emp_id: int, db: AsyncSession = Depends(get_db)):
     name = body.name
     email = body.email
@@ -98,6 +97,7 @@ async def update(body: EmployeeUpdate, emp_id: int, db: AsyncSession = Depends(g
     "/{emp_id}/addresses/{address_id}",
     tags=["Employees-Address"],
     response_model=AddressResponse,
+    dependencies=[Depends(require_role(EmployeeRole.HR))],
 )
 async def update_empaddress(
     body: AddressUpdate,
@@ -126,6 +126,7 @@ async def remove(emp_id: int, db: AsyncSession = Depends(get_db)):
     "/{emp_id}/adresses/{address_id}",
     tags=["Employees-Address"],
     response_model=AddressResponse,
+    dependencies=[Depends(require_role(EmployeeRole.HR))],
 )
 async def remove_empaddress(
     emp_id: int, address_id: int, db: AsyncSession = Depends(get_db)
