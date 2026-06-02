@@ -13,6 +13,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+# creating an employee with address
 async def create(
     db: AsyncSession,
     name: str,
@@ -59,6 +60,7 @@ async def create(
     return db_employee
 
 
+# getting all the employees with adresses
 async def fetch_all(db: AsyncSession):
     stmt = (
         select(Employee)
@@ -71,6 +73,7 @@ async def fetch_all(db: AsyncSession):
     return db_employee
 
 
+# getting one employee with address
 async def fetch_one(emp_id: int, db: AsyncSession):
     stmt = (
         select(Employee)
@@ -82,10 +85,11 @@ async def fetch_one(emp_id: int, db: AsyncSession):
     emp = db_employee.first()
     if not emp:
         logger.info("ERROR: employee has not been fetched successfully")
-        raise NotFoundException(detail="Employe not found")
+        raise NotFoundException(detail="Employee not found")
     return emp
 
 
+# getting an employee by name
 async def get_by_name(name: str, db: AsyncSession):
     stmt = (
         select(Employee)
@@ -100,6 +104,7 @@ async def get_by_name(name: str, db: AsyncSession):
     return db_employee
 
 
+# getting an employee by email
 async def get_by_email(email: str, db: AsyncSession) -> Employee | None:
     stmt = (
         select(Employee)
@@ -114,12 +119,13 @@ async def get_by_email(email: str, db: AsyncSession) -> Employee | None:
     return db_employee
 
 
+# updating an employee w/o address
 async def update(
     emp_id: int, db: AsyncSession, name: str, email: str, age: int, password: str
 ):
     db_employee = await fetch_one(emp_id, db)
     if not db_employee:
-        raise NotFoundException(detail="Employe not found")
+        raise NotFoundException(detail="Employee not found")
     db_employee.name = name
     db_employee.email = email
     db_employee.age = age
@@ -134,6 +140,7 @@ async def update(
     return db_employee
 
 
+# updating the address of an employee
 async def update_empaddress(
     body: AddressUpdate, emp_id: int, address_id: int, db: AsyncSession
 ):
@@ -158,6 +165,7 @@ async def update_empaddress(
     return address
 
 
+# removing an employee
 async def remove(emp_id: int, db: AsyncSession):
     db_employee = await fetch_one(emp_id, db)
     db_employee.deleted_at = datetime.now()
@@ -172,9 +180,10 @@ async def remove(emp_id: int, db: AsyncSession):
     return db_employee
 
 
+# removing an the address of an employee
 async def remove_empaddress(emp_id, address_id, db):
     db_employee = await fetch_one(emp_id, db)
-    # loop to identify which address needs to be updated depending on the id passed
+    # loop to identify which address needs to be removed depending on the id passed
     address = next(
         (
             addr
@@ -190,6 +199,7 @@ async def remove_empaddress(emp_id, address_id, db):
     return address
 
 
+# attaching an employee to a department in assoc
 async def create_empdept(emp_id: int, department_id: int, db: AsyncSession):
     association = Emp_Dept_Assoc(employee_id=emp_id, department_id=department_id)
     db.add(association)
@@ -202,6 +212,7 @@ async def create_empdept(emp_id: int, department_id: int, db: AsyncSession):
     return association
 
 
+# detaching an employee from a department in assoc
 async def detach_empdept(emp_id: int, department_id: int, db: AsyncSession):
     stmt = (
         select(Emp_Dept_Assoc)
@@ -213,7 +224,7 @@ async def detach_empdept(emp_id: int, department_id: int, db: AsyncSession):
     association = result.first()
 
     if not association:
-        raise NotFoundException(detail="Assocciation not found")
+        raise NotFoundException(detail="Association not found")
 
     association.deleted_at = datetime.now()
 
@@ -221,6 +232,3 @@ async def detach_empdept(emp_id: int, department_id: int, db: AsyncSession):
     await db.refresh(association)
 
     return association
-
-
-# async def search():

@@ -9,6 +9,7 @@ from models import Department
 from models.emp_dep_assoc import Emp_Dept_Assoc
 
 
+# creating a department
 async def create(db: AsyncSession, name: str):
     department = Department(name=name.strip())
     db.add(department)
@@ -23,6 +24,7 @@ async def create(db: AsyncSession, name: str):
     return department
 
 
+# fetching all the departments
 async def fetch_all(db: AsyncSession):
     stmt = select(Department).where(Department.deleted_at.is_(None))
     department = await db.scalars(stmt)
@@ -31,6 +33,7 @@ async def fetch_all(db: AsyncSession):
     return department
 
 
+# fetching one department with employees
 async def fetch_one(dept_id: int, db: AsyncSession):
     # to avoild lazy loading we are using select in load---load the departments, then the association rows and then the employees
     stmt = (
@@ -50,6 +53,7 @@ async def fetch_one(dept_id: int, db: AsyncSession):
     return department
 
 
+# updating a department
 async def update(dept_id: int, db: AsyncSession, name: str):
     department = await fetch_one(dept_id, db)
     department.name = name
@@ -67,6 +71,7 @@ async def update(dept_id: int, db: AsyncSession, name: str):
     return department
 
 
+# removing a department
 async def remove(dept_id: int, db: AsyncSession):
     department = await fetch_one(dept_id, db)
     department.deleted_at = datetime.now()

@@ -12,6 +12,7 @@ from departments.schemas import (
 router = APIRouter(prefix="/department", tags=["Departments"])
 
 
+# creating a department
 @router.post(
     "",
     status_code=status.HTTP_201_CREATED,
@@ -25,18 +26,21 @@ async def create(body: DepartmentCreate, db: AsyncSession = Depends(get_db)):
     return department
 
 
+# fetching all the departments
 @router.get("", tags=["Departments"], response_model=list[DepartmentResponse])
 async def fetch_all(db: AsyncSession = Depends(get_db)):
     department = await department_service.fetch_all(db)
     return department
 
 
+# fetching one department with employees
 @router.get("/{dept_id}", tags=["Departments"], response_model=DepartmentDetailResponse)
 async def fetch_one(dept_id: int, db: AsyncSession = Depends(get_db)):
     department = await department_service.fetch_one(dept_id, db)
     return department
 
 
+# updating a department
 @router.put("/{dept_id}", tags=["Departments"], response_model=DepartmentResponse)
 async def update(
     body: DepartmentUpdate, dept_id: int, db: AsyncSession = Depends(get_db)
@@ -46,6 +50,7 @@ async def update(
     return department
 
 
+# removing a department
 @router.delete("/{dept_id}", tags=["Departments"], response_model=DepartmentResponse)
 async def remove(dept_id: int, db: AsyncSession = Depends(get_db)):
     department = await department_service.remove(dept_id, db)

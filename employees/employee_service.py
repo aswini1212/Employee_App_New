@@ -7,6 +7,7 @@ from auth.utils import hash_password
 from employees.schemas import AddressCreate, AddressUpdate
 
 
+# creating an employee with address
 async def create(
     db: AsyncSession,
     name: str,
@@ -36,26 +37,31 @@ async def create(
     return employee
 
 
+# getting all the employees with adresses
 async def fetch_all(db: AsyncSession) -> Employee:
     employee = await employee_repo.fetch_all(db)
     return employee
 
 
+# getting one employee with address
 async def fetch_one(emp_id: int, db: AsyncSession) -> Employee:
     employee = await employee_repo.fetch_one(emp_id, db)
     return employee
 
 
+# getting an employee by email
 async def get_by_email(email: str, db: AsyncSession) -> Employee | None:
     employee = await employee_repo.get_by_email(email, db)
     return employee
 
 
+# getting an employee by name
 async def get_by_name(name: str, db: AsyncSession):
     employee = await employee_repo.get_by_name(name, db)
     return employee
 
 
+# updating an employee
 async def update(
     emp_id: int, db: AsyncSession, name: str, email: str, age: int, password: str
 ) -> Employee:
@@ -68,6 +74,7 @@ async def update(
     return employee
 
 
+# updating the address of an employee
 async def update_empaddress(
     body: AddressUpdate, emp_id: int, address_id: int, db: AsyncSession
 ) -> Address:
@@ -75,13 +82,15 @@ async def update_empaddress(
     return address
 
 
+# removing an employee
 async def remove(emp_id: int, db: AsyncSession) -> Employee:
     employee = await employee_repo.remove(emp_id, db)
     if not employee:
-        raise NotFoundException(detail="Employe not found")
+        raise NotFoundException(detail="Employee not found")
     return employee
 
 
+# removing an the address of an employee
 async def remove_empaddress(emp_id: int, address_id: int, db: AsyncSession) -> Address:
     address = await employee_repo.remove_empaddress(emp_id, address_id, db)
     if not address:
@@ -89,6 +98,7 @@ async def remove_empaddress(emp_id: int, address_id: int, db: AsyncSession) -> A
     return address
 
 
+# attaching dept and emp_id to assoc table
 async def create_empdept(emp_id: int, department_id: int, db: AsyncSession):
     association = await employee_repo.create_empdept(emp_id, department_id, db)
     if not association:
@@ -96,11 +106,9 @@ async def create_empdept(emp_id: int, department_id: int, db: AsyncSession):
     return association
 
 
+# detaching dept and emp_id to assoc table
 async def detach_empdept(emp_id: int, department_id: int, db: AsyncSession):
     association = await employee_repo.create_empdept(emp_id, department_id, db)
     if not association:
         raise NotFoundException("Association not found between employee and department")
     return association
-
-
-# async def search()->Employee

@@ -53,10 +53,14 @@ async def get_by_email(email: str, db: AsyncSession = Depends(get_db)):
 
 
 # getting all the employees
-@router.get("", tags=["Employees"], response_model=list[EmployeeResponse])
+@router.get(
+    "",
+    tags=["Employees"],
+    response_model=list[EmployeeResponse],
+    dependencies=[Depends(require_role(EmployeeRole.HR))],
+)
 async def fetch_all(
     db: AsyncSession = Depends(get_db),
-    dependencies=[Depends(require_role(EmployeeRole.HR))],
 ):
     result = await employee_service.fetch_all(db)
     return result

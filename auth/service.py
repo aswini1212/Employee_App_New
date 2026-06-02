@@ -47,7 +47,7 @@ async def refresh(refresh_token: str):
         raise UnauthorizedException(detail="Invalid refresh token")
 
     new_access_token = create_access_token(
-        {"id": payload["id"], "email": payload["email"]}
+        {"id": payload["id"], "email": payload["email"], "role": payload["role"]}
     )
 
     return new_access_token
